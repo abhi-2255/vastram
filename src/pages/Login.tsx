@@ -33,11 +33,11 @@ const Login = () => {
                     <input type="text" name="email" value={formData.email} className="px-3 py-2 w-[90%]  border border-gray-800" placeholder="Email" />
                     <input type="text" name="password" value={formData.password} className="px-3 py-2 w-[90%]  border border-gray-800" placeholder="Password" />
                     {currentState === 'Login' ? '' : <input type="text" name="confirmPassword" value={formData.confirmPassword} className="px-3 py-2 w-[90%]  border border-gray-800" placeholder="Confirm Password" />}
-                    <div className="flex justify-evenly gap-2">
-                        <p className="cursor-pointer text-sm">Forgot your password?</p>
+                    <div className="flex justify-around w-full gap-2">
+                        <p className="cursor-pointer text-sm font-medium">Forgot your password?</p>
                         {currentState === 'Login'
-                            ? <p onClick={() => setCurrentState('Sign Up')} className="cursor-pointer text-sm">Create Account!</p>
-                            : <p onClick={() => setCurrentState('Login')} className="cursor-pointer text-sm ">Login Here!</p>}
+                            ? <p onClick={() => setCurrentState('Sign Up')} className="cursor-pointer text-sm text-blue-500">Create Account!</p>
+                            : <p onClick={() => setCurrentState('Login')} className="cursor-pointer text-sm text-blue-500">Login Here!</p>}
                     </div>
                     <button className="bg-red-400 hover:bg-red-500 text-white px-5 py-2">{currentState === 'Login' ? 'SignIn' : 'SignUp'}</button>
                 </form>
