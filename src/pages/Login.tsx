@@ -1,8 +1,9 @@
-import { useNavigate } from "@tanstack/react-router"
+import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "@tanstack/react-router"
 import { useState } from "react"
 
 const Login = () => {
-
+    const router = useRouter();
     const [currentState, setCurrentState] = useState('Signup')
     const [formData, setFormData] = useState({
         firstName: "",
@@ -13,16 +14,33 @@ const Login = () => {
         confirmPassword: "",
     })
 
-    const onSubmitHandler = async (event) =>{
-        event.preventDefault();
-    }
+    const mutation = useMutation({
+        mutationFn: async(data: typeof formData) =>{
+            const url = currentState ==='Login'? "/api/auth/login" : "/api/auth/signup";
+            const res = await fetch(url,{
+                method: "POST",
+                headers: {"Content-Type":"application/json"},
+                body: JSON.stringify(data)
+            })
+            if(!res.ok) throw new Error("Request Failed");
+            return res.json();
+        },
+        onSuccess: (data)=>{
+            console.log("Success",data);
+            router.navigate("/home")
+            
+        },
+        onError: (error)=>{
+            console.error("Error",error);
+        },
+    })
     return (
         <div className="container mx-auto mt-10 flex justify-center ">
             <div className="flex flex-col justify-center items-center w-xs text-gray-800 bg-amber-50 space-y-3 p-5">
                 <div className="inline-flex items-center ">
                     <h2 className="text-3xl mb-2">{currentState}</h2>
                 </div>
-                <form onSubmit={onSubmitHandler} className="flex flex-col justify-center items-center w-full space-y-3">
+                <form onSubmit={} className="flex flex-col justify-center items-center w-full space-y-3">
                     {currentState === 'Login' ? '' : (
                         <>
                             <input type="text" name="firstName" value={formData.firstName} className="px-3 py-2 w-[90%]  border border-gray-800" placeholder="First name" />
