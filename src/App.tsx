@@ -1,6 +1,6 @@
 
 import Home from './pages/Home'
-import Login from './pages/Login'
+import Login from './pages/LoginSignup'
 
 export default function App() {
 
