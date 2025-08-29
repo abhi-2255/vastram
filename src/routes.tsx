@@ -11,19 +11,8 @@ const rootRoute = createRootRoute ({
         </>
     )
 })
-
-const homeRoute = createRoute ({
-    getParentRoute: () => rootRoute,
-    path: "/home",
-    component: Home,
-})
-
-const loginRoute = createRoute({
-    getParentRoute: ()=> rootRoute,
-    path: "/login",
-    component: Login,
-})
-
+const homeRoute = createRoute({getParentRoute: () => rootRoute, path: "/", component: Home,})
+const loginRoute = createRoute({getParentRoute: () => rootRoute, path: "/login", component: Login,})
 
 const routeTree = rootRoute.addChildren([homeRoute,loginRoute])
 

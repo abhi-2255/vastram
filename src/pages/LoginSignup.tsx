@@ -46,7 +46,7 @@ const Login = () => {
             <Navbar />
             <div className="container mx-auto mt-10 flex justify-center ">
                 <form onSubmit={handleSubmit}
-                    className="flex flex-col justify-center items-center w-xs text-gray-800 bg-amber-50 space-y-3 p-5 border border-gray-400 rounded-md">
+                    className="flex flex-col justify-center items-center w-xs text-gray-800 bg-amber-50 space-y-3 p-5 border border-gray-100 rounded-md">
                     <h2 className="inline-flex items-center text-3xl mb-2">{currentState}</h2>
                     <div className="flex flex-col justify-center items-center w-full space-y-3 p-2">
                         {currentState === 'Login' ? '' : (
