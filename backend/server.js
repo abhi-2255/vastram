@@ -10,3 +10,8 @@ mongoose.connect("mongodb://",{
 })
 .then(()=> console.log("MongoDB connected"))
 .catch(err=> console.error(err))
+
+app.use("/api/auth",authRoutes)
+
+app.listen(5000,()=>console.log("Server running");
+)
