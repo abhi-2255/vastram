@@ -14,6 +14,24 @@ const Login = () => {
         password: "",
         confirmPassword: "",
     })
+
+    const nameRegex = /^[A-Za-z]+$/;
+    const mobileRegex = /^[0-9]{10}$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
+
+    const validateForm = ()=>{
+        if(currentState !== "Login"){
+            if(!nameRegex.test(formData.firstName)) return "First name should only contain alphabets"
+            if(!nameRegex.test(formData.lastName)) return "Last name should only contain alphabets"
+            if(!mobileRegex.test(formData.mobile)) return "Enter 10 digits"
+        }
+        if(!emailRegex.test(formData.email)) return "Invalid email format"
+        if(!passwordRegex.test(formData.password)) return "Password must be strong"
+        if(currentState !== "Login" && formData.password !== formData.confirmPassword) return "Passwords do not match";
+        return null;
+    }
+
     const mutation = useMutation({
         mutationFn: async (data: typeof formData) => {
             const url = currentState === 'Login' ? "/api/auth/login" : "/api/auth/signup";
@@ -38,7 +56,12 @@ const Login = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value })
     }
     const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault()
+        e.preventDefault();
+        const error = validateForm()
+        if(error){
+            alert(error)
+            return;
+        }
         mutation.mutate(formData)
     }
     return (
