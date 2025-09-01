@@ -4,7 +4,7 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 
-mongoose.connect("mongodb://",{
+mongoose.connect("mongodb://localhost:27017/vastram",{
     useNewUrlParser: true,
     useUnifiedTopology:true,
 })
@@ -13,5 +13,4 @@ mongoose.connect("mongodb://",{
 
 app.use("/api/auth",authRoutes)
 
-app.listen(5000,()=>console.log("Server running");
-)
+app.listen(5000,()=>console.log("Server running"))
