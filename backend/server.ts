@@ -9,15 +9,15 @@ app.use(cors())
 app.use(express.json())
 
 mongoose.connect("mongodb://localhost:27017/vastram")
-.then(()=> console.log("MongoDB connected"))
-.catch(err=> console.error(err))
+    .then(() => console.log("MongoDB connected"))
+    .catch(err => console.error(err))
 
 
 
-app.use("/api/auth",authRoutes)
+app.use("/api/auth", authRoutes)
 app.use("/api/products", productRoutes)
 
 
 
 
-app.listen(5000,()=>console.log("Server running"))
+app.listen(5000, () => console.log("Server running"))
