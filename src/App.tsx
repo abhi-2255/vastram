@@ -1,6 +1,7 @@
 
 import Home from './pages/Home'
 import Login from './pages/LoginSignup'
+import OtpForm from './pages/Otp'
 
 export default function App() {
 
@@ -8,6 +9,7 @@ export default function App() {
     <>
       <Home/>
       <Login />
+      <OtpForm/>
     </>
   )
 }

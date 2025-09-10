@@ -6,7 +6,7 @@ const rootRoute = createRootRoute ({
     component: () => (
         <>
             <div className="p-4">
-                <Outlet />
+                <Outlet/>
             </div>
         </>
     )
