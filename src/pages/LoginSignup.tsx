@@ -22,11 +22,16 @@ const Login = () => {
 
     const validateForm = ()=>{
         if(currentState !== "Login"){
+            if(!formData.firstName.trim()) return "First name is required"
             if(!nameRegex.test(formData.firstName)) return "First name should only contain alphabets"
+            if(!formData.lastName.trim()) return "Last name is required"
             if(!nameRegex.test(formData.lastName)) return "Last name should only contain alphabets"
+            if(!formData.mobile.trim()) return "Mobile number is required"
             if(!mobileRegex.test(formData.mobile)) return "Enter 10 digits"
         }
+        if(!formData.email.trim()) return "Email is required"
         if(!emailRegex.test(formData.email)) return "Invalid email format"
+        if (!formData.password.trim()) return "Enter password"
         if(!passwordRegex.test(formData.password)) return "Password must be strong"
         if(currentState !== "Login" && formData.password !== formData.confirmPassword) return "Passwords do not match";
         return null;

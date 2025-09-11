@@ -36,8 +36,6 @@ const Home: React.FC = () => {
                     <img src="/images/home.webp" alt="couple fashion" className="rounded-3xl shadow-lg w-md " />
                 </div>
             </section>
-
-
         </div>
     )
 }
