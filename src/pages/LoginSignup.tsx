@@ -14,32 +14,73 @@ const Login = () => {
         password: "",
         confirmPassword: "",
     })
+    const [errors, setErrors] = useState<{ [key: string]: string }>({})
 
     const nameRegex = /^[A-Za-z]+$/;
     const mobileRegex = /^[0-9]{10}$/;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
 
-    const validateForm = ()=>{
-        if(currentState !== "Login"){
-            if(!formData.firstName.trim()) return "First name is required"
-            if(!nameRegex.test(formData.firstName)) return "First name should only contain alphabets"
-            if(!formData.lastName.trim()) return "Last name is required"
-            if(!nameRegex.test(formData.lastName)) return "Last name should only contain alphabets"
-            if(!formData.mobile.trim()) return "Mobile number is required"
-            if(!mobileRegex.test(formData.mobile)) return "Enter 10 digits"
+    const validateField = (name: string, value: string) => {
+        switch (name) {
+            case "firstName":
+                if (!value.trim()) return "First name is required";
+                if (!nameRegex.test(value)) return "First name should only contain alphabets";
+                break;
+            case "lastName":
+                if (!value.trim()) return "Last name is required";
+                if (!nameRegex.test(value)) return "Last name should only contain alphabets";
+                break;
+            case "mobile":
+                if (!value.trim()) return "Mobile number is required";
+                if (!mobileRegex.test(value)) return "Enter 10 digits";
+                break;
+            case "email":
+                if (!value.trim()) return "Email is required";
+                if (!emailRegex.test(value)) return "Invalid email format";
+                break;
+            case "password":
+                if (!value.trim()) return "Password is required";
+                if (!passwordRegex.test(value)) return "Password must be strong";
+                break;
+            case "confirmPassword":
+                if (currentState !== "Login" && value !== formData.password)
+                    return "Passwords do not match";
+                break;
         }
-        if(!formData.email.trim()) return "Email is required"
-        if(!emailRegex.test(formData.email)) return "Invalid email format"
-        if (!formData.password.trim()) return "Enter password"
-        if(!passwordRegex.test(formData.password)) return "Password must be strong"
-        if(currentState !== "Login" && formData.password !== formData.confirmPassword) return "Passwords do not match";
+        return "";
+    };
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value })
+
+        const error = validateField(name, value)
+        setErrors((prev) => ({ ...prev, [name]: error }))
+    }
+
+    const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        const error = validateField(name, value)
+        setErrors((prev) => ({ ...prev, [name]: error }))
+    }
+
+
+    const validateForm = () => {
+        if (currentState !== "Login") {
+            if (!nameRegex.test(formData.firstName)) return "First name should only contain alphabets"
+            if (!nameRegex.test(formData.lastName)) return "Last name should only contain alphabets"
+            if (!mobileRegex.test(formData.mobile)) return "Enter 10 digits"
+        }
+        if (!emailRegex.test(formData.email)) return "Invalid email format"
+        if (!passwordRegex.test(formData.password)) return "Password must be strong"
+        if (currentState !== "Login" && formData.password !== formData.confirmPassword) return "Passwords do not match";
         return null;
     }
 
     const mutation = useMutation({
         mutationFn: async (data: typeof formData) => {
-            const url = currentState === 'Login' ? "/api/auth/login" : "/api/auth/signup";
+            const url = currentState === 'Login' ? "http://localhost:5000/routes/auth/login" : "http://localhost:5000/routes/auth/signup";
             const res = await fetch(url, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -57,13 +98,11 @@ const Login = () => {
             console.error("Error", error);
         },
     })
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value })
-    }
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         const error = validateForm()
-        if(error){
+        if (error) {
             alert(error)
             return;
         }
@@ -79,21 +118,26 @@ const Login = () => {
                     <div className="flex flex-col justify-center items-center w-full space-y-3 p-2">
                         {currentState === 'Login' ? '' : (
                             <>
-                                <input type="text" name="firstName" value={formData.firstName} onChange={handleChange} className="px-3 py-2 w-[90%]  border border-gray-800" placeholder="First name" />
-                                < input type="text" name="lastName" value={formData.lastName} onChange={handleChange} className="px-3 py-2 w-[90%]  border border-gray-800" placeholder="Last name" />
-                                < input type="text" name="mobile" value={formData.mobile} onChange={handleChange} className="px-3 py-2 w-[90%]  border border-gray-800" placeholder="Mobile Number" />
+                                <input type="text" name="firstName" value={formData.firstName} onChange={handleChange} onBlur={handleBlur} className="px-3 py-2 w-[90%]  border border-gray-800" placeholder="First name" />
+                                {errors.firstName && <p className="text-red-500">{errors.firstName}</p>}
+                                < input type="text" name="lastName" value={formData.lastName} onChange={handleChange} onBlur={handleBlur} className="px-3 py-2 w-[90%]  border border-gray-800" placeholder="Last name" />
+                                {errors.lastName && <p className="text-red-500">{errors.lastName}</p>}
+                                < input type="text" name="mobile" value={formData.mobile} onChange={handleChange} onBlur={handleBlur} className="px-3 py-2 w-[90%]  border border-gray-800" placeholder="Mobile Number" />
+                                {errors.mobile && <p className="text-red-500">{errors.mobile}</p>}
                             </>
                         )}
-                        <input type="text" name="email" value={formData.email} onChange={handleChange} className="px-3 py-2 w-[90%]  border border-gray-800" placeholder="Email" />
-                        <input type="text" name="password" value={formData.password} onChange={handleChange} className="px-3 py-2 w-[90%]  border border-gray-800" placeholder="Password" />
-                        {currentState === 'Login' ? '' : <input type="text" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} className="px-3 py-2 w-[90%]  border border-gray-800" placeholder="Confirm Password" />}
+                        <input type="text" name="email" value={formData.email} onChange={handleChange} onBlur={handleBlur} className="px-3 py-2 w-[90%]  border border-gray-800" placeholder="Email" />
+                        {errors.email && <p className="text-red-500">{errors.email}</p>}
+                        <input type="text" name="password" value={formData.password} onChange={handleChange} onBlur={handleBlur} className="px-3 py-2 w-[90%]  border border-gray-800" placeholder="Password" />
+                        {errors.password && <p className="text-red-500">{errors.password}</p>}
+                        {currentState === 'Login' ? '' : <input type="text" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} onBlur={handleBlur} className="px-3 py-2 w-[90%]  border border-gray-800" placeholder="Confirm Password" />}
                         <div className="flex justify-around w-full gap-2">
                             <p className="cursor-pointer text-sm font-medium">Forgot your password?</p>
                             {currentState === 'Login'
                                 ? <p onClick={() => setCurrentState('Sign Up')} className="cursor-pointer text-sm text-blue-500">Create Account!</p>
                                 : <p onClick={() => setCurrentState('Login')} className="cursor-pointer text-sm text-blue-500">Login Here!</p>}
                         </div>
-                        <button type="submit" className="bg-red-400 hover:bg-red-500 text-white px-5 py-2 mt-2 rounded">{currentState === 'Login' ? 'SignIn' : 'SignUp'}</button>
+                        <button type="submit" className="bg-red-400 hover:bg-red-500 cursor-pointer text-white px-5 py-2 mt-2 rounded">{currentState === 'Login' ? 'SignIn' : 'SignUp'}</button>
                     </div>
                 </form>
             </div>
