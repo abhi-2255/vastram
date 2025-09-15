@@ -6,7 +6,7 @@ interface FooterProps {
 }
 
 const AdminFooter: React.FC<FooterProps> = ({
-    companyName = "InstyleSoles - The Complete Shoe Stores",
+    companyName = "Vastram - Ethnic Traditional Stores",
     className = ""
 }) => {
     const currentYear = new Date().getFullYear();
