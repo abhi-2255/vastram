@@ -6,12 +6,8 @@ import {
     TrendingUp,
     FileText,
     Plus,
-    Calendar,
-    Filter,
     Eye,
     CreditCard,
-    Users,
-    Activity,
     BarChart3,
     PieChart
 } from 'lucide-react';
