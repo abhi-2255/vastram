@@ -13,4 +13,7 @@ export default defineConfig({
       autoCodeSplitting: true,
     })
   ],
+  server: {
+    port: 3000
+  }
 });
