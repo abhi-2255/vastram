@@ -1,5 +1,5 @@
 import {  createRootRoute, createRoute, Outlet, createRouter } from "@tanstack/react-router";
-import Login from "./pages/LoginSignup";
+import Login from "./pages/Login";
 import Home from "./pages/Home";
 import OtpForm from "./pages/Otp";
 import Product from "./pages/Product";
