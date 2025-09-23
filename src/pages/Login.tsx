@@ -80,7 +80,7 @@ const Login = () => {
 
     const mutation = useMutation({
         mutationFn: async (data: typeof formData) => {
-            const url = currentState === 'Login' ? "http://localhost:5000/routes/auth/login" : "http://localhost:5000/routes/auth/signup";
+            const url = currentState === 'Login' ? "/auth/login" : "/auth/signup";
             const res = await fetch(url, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
