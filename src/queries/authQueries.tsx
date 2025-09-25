@@ -15,11 +15,11 @@ export const useLoginMutation = (onSuccess?: (data: AuthResponse)=>void) =>{
     })
 }
 
-export const useSignupMutation = (OnSuccess?: (data: AuthResponse)=>void)=>{
+export const useSignupMutation = (onSuccess?: (data: AuthResponse)=>void)=>{
     return useMutation({
         mutationFn: async(data:SignupData): Promise<AuthResponse>=>{
             const res = await axios.post(`${apiUrl}/signup`,data)
-            return res.data
+            return res.data;
         },
         onSuccess,
     })
