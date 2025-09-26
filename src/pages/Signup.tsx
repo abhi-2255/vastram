@@ -1,8 +1,7 @@
-import { dataTagErrorSymbol, useSignupMutation } from "@tanstack/react-query";
 import { useRouter } from "@tanstack/react-router"
 import { useState } from "react"
 import Navbar from "../Navbar";
-import axios from "axios";
+import { useSignupMutation } from "../queries/authQueries";
 
 const Signup = () => {
     const router = useRouter();
@@ -75,7 +74,7 @@ const Signup = () => {
     //     return null;
     // }
 
-    const signupMutation = useSignupMutation()
+    const signupMutation = useSignupMutation();
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -84,7 +83,7 @@ const Signup = () => {
                 localStorage.setItem("token",data.token)
                 router.navigate({to:"/home"})
             },
-            onError:(error: never)=>{
+            onError:(error)=>{
                 console.error(error);
                 alert("Signup Failed")
             }

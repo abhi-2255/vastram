@@ -5,7 +5,7 @@ export interface LoginData{
 }
 
 export interface SignupData{
-    firsName: string;
+    firstName: string;
     lastName: string;
     mobile: string;
     email: string;
