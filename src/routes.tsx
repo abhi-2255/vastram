@@ -21,6 +21,6 @@ const signupRoute = createRoute({getParentRoute: ()=> rootRoute, path: "/signup"
 const otpRoute = createRoute({getParentRoute: ()=> rootRoute, path: "/otp", component: OtpForm})
 const productRoute = createRoute({getParentRoute: ()=> rootRoute, path: "/product", component: Product})
 
-const routeTree = rootRoute.addChildren([homeRoute,loginRoute,signupRoute, otpRoute,productRoute])
+const routeTree = rootRoute.addChildren([homeRoute,loginRoute,signupRoute,otpRoute,productRoute])
 
 export const router = createRouter({routeTree})
