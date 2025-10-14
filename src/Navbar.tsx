@@ -1,7 +1,22 @@
 import { Link } from "@tanstack/react-router";
 import { Heart, Search, ShoppingCart, User } from "lucide-react";
+import { useEffect, useState } from "react";
 
 export default function Navbar() {
+    const router = useRouter()
+    const [isLoggedIn, setIsLoggedIn] = useState(false)
+    const [showDropdown, setShowDropdown] = useState(false)
+
+    useEffect(()=>{
+        const token = localStorage.getItem('token')
+        setIsLoggedIn(!!token)
+    },[]);
+
+    const handleLogout = ()=>{
+        localStorage.removeItem('token');
+        setIsLoggedIn(false)
+        router.navigate({to:'/login'})
+    }
     return (
         <>
             {/* Navbar  */}

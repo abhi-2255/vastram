@@ -1,9 +1,24 @@
 import type React from "react";
 import Navbar from "../Navbar";
+import { useRouter } from "@tanstack/react-router";
+import { useEffect } from "react";
 
 
 const Home: React.FC = () => {
-    const categories: string[] = ['Bridal Wear', 'Groom Wear', 'Family Collection', 'Festive Outfits', 'Sangeet Colletion']
+    const router = useRouter()
+    const categories: string[] = ['Bridal Wear',
+        'Groom Wear',
+        'Family Collection',
+        'Festive Outfits',
+        'Sangeet Colletion']
+
+    useEffect(() => {
+        const token = localStorage.getItem('token')
+        if (!token) {
+            router.navigate({ to: '/login' })
+        }
+    }, [router])
+
     return (
         <div className="bg-white text-gray-900 font-[prata]" >
             <Navbar />
@@ -26,10 +41,10 @@ const Home: React.FC = () => {
                         ))}
                     </div>
                     <div className="flex mt-5">
-                    <button className="px-5 py-2 border border-red-700 text-red-700 rounded-lg hover:bg-red-100">
-                        Explore all
-                    </button>
-                </div>
+                        <button className="px-5 py-2 border border-red-700 text-red-700 rounded-lg hover:bg-red-100">
+                            Explore all
+                        </button>
+                    </div>
                 </div>
                 {/* Image Section  */}
                 <div className="flex justify-center ">

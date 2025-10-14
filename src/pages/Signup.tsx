@@ -81,7 +81,7 @@ const Signup = () => {
         signupMutation.mutate(formData,{
             onSuccess:(data: { token: string; })=>{
                 localStorage.setItem("token",data.token)
-                router.navigate({to:"/home"})
+                router.navigate({to:"/"})
             },
             onError:(error)=>{
                 console.error(error);
