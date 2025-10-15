@@ -2,7 +2,6 @@ import { useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useLoginMutation } from "../queries/authQueries";
 import Navbar from "../Navbar";
-import { router } from "../routes";
 
 
 const Login = () => {
@@ -27,12 +26,12 @@ const Login = () => {
     }
 
     const loginMutation = useLoginMutation()
-    useEffect(()=>{
+    useEffect(() => {
         const token = localStorage.getItem("token")
-        if(token){
-            router.navigate({to:'/'})
+        if (token) {
+            router.navigate({ to: '/' })
         }
-    },[router])
+    }, [router])
 
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -40,8 +39,8 @@ const Login = () => {
         loginMutation.mutate(formData, {
             onSuccess: (data) => {
                 localStorage.setItem("token", data.token)
-                window.history.replaceState(null,'',window.location.href)
-                router.navigate({to:'/'})
+                window.history.replaceState(null, '', window.location.href)
+                router.navigate({ to: '/' })
             },
             onError: (error) => {
                 console.error(error);

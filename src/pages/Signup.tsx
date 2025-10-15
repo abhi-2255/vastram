@@ -75,13 +75,12 @@ const Signup = () => {
     // }
 
     const signupMutation = useSignupMutation();
-
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         signupMutation.mutate(formData,{
             onSuccess:(data: { token: string; })=>{
-                localStorage.setItem("token",data.token)
-                router.navigate({to:"/"})
+                alert('Signup successful! Please verify your email')
+                router.navigate({to:"/otp",state:{email:formData.email}})
             },
             onError:(error)=>{
                 console.error(error);
@@ -119,8 +118,6 @@ const Signup = () => {
                 </form>
             </div>
         </>
-
-
     )
 }
 export default Signup;

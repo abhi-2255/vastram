@@ -1,15 +1,31 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "../Navbar";
+import { useLocation, useRouter } from "@tanstack/react-router";
 
 const API_URL = import.meta.env.VITE_API_URL as string;
 
 const OtpForm = () => {
-    const [email, setEmail] = useState("");
+    const location = useLocation()
+    const router = useRouter()
+    const [email, setEmail] = useState(location.state?.email || "");
     const [otp, setOtp] = useState("");
     const [message, setMessage] = useState("");
+    const [timer, setTimer] = useState(60)
+    const [isResendDisabled, setIsResendDisabled] = useState(true)
+
+    useEffect(() => {
+        if (timer > 0 && isResendDisabled) {
+            const interval = setInterval(() => setTimer((t) => t - 1), 1000)
+            return () => clearInterval(interval)
+        } else if (timer === 0) {
+            setIsResendDisabled(false)
+        }
+    }, [timer, isResendDisabled])
 
     const sendOtp = async () => {
         try {
+            setIsResendDisabled(true)
+            setTimer(60)
             const res = await fetch(`${API_URL}/auth/send-otp`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -25,18 +41,27 @@ const OtpForm = () => {
 
     const verifyOtp = async () => {
         try {
-            const res = await fetch(`${API_URL}/auth/verify-otp`, {
+            const res = await fetch(`${API_URL}/auth/verifyotp`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, otp }),
             });
             const data = await res.json();
-            setMessage(data.message || "OTP verified!");
+            if (res.ok) {
+                setMessage(data.message || "OTP verified successfully!");
+                router.navigate({to:"/login"})
+            }else{
+                setMessage(data.message || "Invalid OTP")
+            }
         } catch (err) {
             console.error("Error verifying OTP", err);
             setMessage("Error verifying OTP");
         }
-    };
+    }
+
+    useEffect(()=>{
+        if(email) sendOtp()
+    }, [email]);
 
     return (
         <>
@@ -54,7 +79,7 @@ const OtpForm = () => {
 
                 <button
                     onClick={sendOtp}
-                    className="bg-red-400 hover:bg-red-500 text-white px-4 py-2 rounded mb-2 max-w-md" 
+                    className="bg-red-400 hover:bg-red-500 text-white px-4 py-2 rounded mb-2 max-w-md"
                 >
                     Send OTP
                 </button>
