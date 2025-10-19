@@ -75,13 +75,17 @@ const Signup = () => {
     // }
 
     const signupMutation = useSignupMutation();
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         signupMutation.mutate(formData,{
-            onSuccess:(data: { token: string; })=>{
+            onSuccess:()=>{
                 alert('Signup successful! Please verify your email')
-                router.navigate({to:"/otp",state:{email:formData.email}})
-            },
+                router.navigate({
+                    to:"/otp",
+                    search: {email:formData.email},
+                });
+                },
             onError:(error)=>{
                 console.error(error);
                 alert("Signup Failed")
@@ -111,7 +115,7 @@ const Signup = () => {
                         <input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} onBlur={handleBlur} className="px-3 py-2 w-[90%]  border border-gray-800" placeholder="Confirm Password" />
                         {errors.confirmPassword && <p className="text-red-500">{errors.confirmPassword}</p>}
                         <div className="flex justify-around w-full gap-2">
-                            <p className="cursor-pointer text-sm font-medium">Forgot your password?</p>
+                            <p className="cursor-pointer text-sm font-medium">Already Have an account!Login</p>
                         </div>
                         <button type="submit" className="bg-red-400 hover:bg-red-500 cursor-pointer text-white px-5 py-2 mt-2 rounded">SignUp</button>
                     </div>

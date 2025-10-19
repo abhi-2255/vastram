@@ -21,7 +21,7 @@ const rootRoute = createRootRoute ({
 const homeRoute = createRoute({getParentRoute: () => rootRoute, path: "/", component: Home,})
 const loginRoute = createRoute({getParentRoute: () => rootRoute, path: "/login", component: Login,})
 const signupRoute = createRoute({getParentRoute: ()=> rootRoute, path: "/signup", component: Signup})
-const otpRoute = createRoute({getParentRoute: ()=> rootRoute, path: "/otp", component: OtpForm})
+const otpRoute = createRoute({getParentRoute: ()=> rootRoute, path: "/otp", component: OtpForm,})
 const productRoute = createRoute({getParentRoute: ()=> rootRoute, path: "/product", component: Product})
 const adminRoute = createRoute({getParentRoute: ()=>rootRoute,path:"/admin",component: adminHome})
 const adminlogRoute = createRoute({getParentRoute:()=>rootRoute, path:"/adminlog",component:adminLogin})

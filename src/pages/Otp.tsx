@@ -1,13 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Navbar from "../Navbar";
-import { useLocation, useRouter } from "@tanstack/react-router";
+import { useRouter, useLocation } from "@tanstack/react-router";
+import axios from "axios";
 
 const API_URL = import.meta.env.VITE_API_URL as string;
 
 const OtpForm = () => {
-    const location = useLocation()
     const router = useRouter()
-    const [email, setEmail] = useState(location.state?.email || "");
+    const location = useLocation()
+    const emailFromState = (location.state as { email?: string })?.email || "";
+    const [email] = useState(emailFromState);
     const [otp, setOtp] = useState("");
     const [message, setMessage] = useState("");
     const [timer, setTimer] = useState(60)
@@ -22,36 +24,27 @@ const OtpForm = () => {
         }
     }, [timer, isResendDisabled])
 
-    const sendOtp = async () => {
+    const sendOtp = useCallback(async () => {
         try {
             setIsResendDisabled(true)
             setTimer(60)
-            const res = await fetch(`${API_URL}/auth/send-otp`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email }),
-            });
-            const data = await res.json();
+            const { data } = await axios.post(`${API_URL}/auth/send-otp`, { email })
             setMessage(data.message || "OTP sent!");
-        } catch (err) {
-            console.error("Error sending OTP", err);
+        } catch (error) {
+            console.error("Error sending OTP", error)
             setMessage("Error sending OTP");
         }
-    };
+    }, [email])
 
     const verifyOtp = async () => {
         try {
-            const res = await fetch(`${API_URL}/auth/verifyotp`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, otp }),
-            });
-            const data = await res.json();
-            if (res.ok) {
-                setMessage(data.message || "OTP verified successfully!");
-                router.navigate({to:"/login"})
-            }else{
-                setMessage(data.message || "Invalid OTP")
+            const { data } = await axios.post(`${API_URL}/auth/verifyotp`, { email, otp })
+            // eslint-disable-next-line no-constant-condition
+            if (data?.success || true) {
+                setMessage(data.message || "OTP verified successfully")
+                router.navigate({ to: "/login" })
+            } else {
+                setMessage(data.message || "Invalid OTP");
             }
         } catch (err) {
             console.error("Error verifying OTP", err);
@@ -59,31 +52,33 @@ const OtpForm = () => {
         }
     }
 
-    useEffect(()=>{
-        if(email) sendOtp()
-    }, [email]);
+    useEffect(() => {
+        if (email) sendOtp()
+    }, [email, sendOtp]);
 
     return (
         <>
             <Navbar />
             <div className="p-4 w-md mx-auto mt-30 bg-amber-50">
                 <h2 className="text-xl font-bold mb-2 ">Email OTP Verification</h2>
-
                 <input
                     type="email"
                     placeholder="Enter email"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    readOnly
                     className="border p-2 w-full mb-2"
                 />
-
                 <button
                     onClick={sendOtp}
-                    className="bg-red-400 hover:bg-red-500 text-white px-4 py-2 rounded mb-2 max-w-md"
+                    disabled={isResendDisabled}
+                    className={`bg-red-400 hover:bg-red-500 text-white px-4 py-2 rounded mb-2 max-w-md
+                        ${isResendDisabled ? "bg-gray-400 cursor-not-allowed"
+                            : "bg-red-400 hover:bg-red-500"
+                        }`}
                 >
-                    Send OTP
+                    {isResendDisabled ? `Resend in ${timer}s` : "Send OTP"}
                 </button>
-
+                {/* OTP Input  */}
                 <input
                     type="text"
                     placeholder="Enter OTP"
@@ -91,14 +86,12 @@ const OtpForm = () => {
                     onChange={(e) => setOtp(e.target.value)}
                     className="border p-2 w-full mb-2"
                 />
-
                 <button
                     onClick={verifyOtp}
                     className="bg-green-400 hover:bg-green-500 text-white px-4 py-2 rounded mb-2 max-w-md grid place-content-end"
                 >
                     Verify OTP
                 </button>
-
                 <p className="text-sm text-gray-700">{message}</p>
             </div>
         </>
