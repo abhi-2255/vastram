@@ -1,6 +1,6 @@
 import { RouterProvider, createRouter, createRoute, createRootRoute, Link, Outlet } from '@tanstack/react-router'
 import Home from './pages/Home'
-import Login from './pages/Signup'
+import Login from './pages/Login'
 import OtpForm from './pages/Otp'
 
 

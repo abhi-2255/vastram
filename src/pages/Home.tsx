@@ -2,6 +2,7 @@ import type React from "react";
 import Navbar from "../Navbar";
 import { useRouter } from "@tanstack/react-router";
 import { useEffect } from "react";
+import Product from "./Product";
 
 
 const Home: React.FC = () => {
@@ -11,7 +12,6 @@ const Home: React.FC = () => {
         'Family Collection',
         'Festive Outfits',
         'Sangeet Colletion']
-
     useEffect(() => {
         const token = localStorage.getItem('token')
         if (!token) {
@@ -51,6 +51,7 @@ const Home: React.FC = () => {
                     <img src="/images/home.webp" alt="couple fashion" className="rounded-3xl shadow-lg w-md " />
                 </div>
             </section>
+            <Product/>
         </div>
     )
 }

@@ -1,4 +1,4 @@
-import { useRouter } from "@tanstack/react-router";
+import { useRouter, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useLoginMutation } from "../queries/authQueries";
 import Navbar from "../Navbar";
@@ -76,7 +76,9 @@ const Login = () => {
                         className="px-3 py-2 w-[90%] border border-gray-800"
                     />
                     {errors.password && <p className="text-red-500">{errors.password}</p>}
-
+                    <Link to="/signup" className="flex justify-around w-full gap-2">
+                        <p className="cursor-pointer text-sm font-medium">Create a new account.</p>
+                    </Link>
                     <button
                         type="submit"
                         className="bg-red-400 hover:bg-red-500 text-white px-5 py-2 mt-2 rounded"

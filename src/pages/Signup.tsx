@@ -87,7 +87,7 @@ const Signup = () => {
                 });
                 },
             onError:(error)=>{
-                console.error(error);
+                console.error(error)
                 alert("Signup Failed")
             }
         })
