@@ -1,15 +1,14 @@
 import { useEffect, useState, useCallback } from "react";
-import Navbar from "../Navbar";
-import { useRouter, useLocation } from "@tanstack/react-router";
+import { useRouter, } from "@tanstack/react-router";
 import axios from "axios";
+import { useSignupStore } from "../store/signupStore";
 
 const API_URL = import.meta.env.VITE_API_URL as string;
 
 const OtpForm = () => {
     const router = useRouter()
-    const location = useLocation()
-    const emailFromState = (location.state as { email?: string })?.email || "";
-    const [email] = useState(emailFromState);
+    const { signupData, clearSignupData } = useSignupStore()
+    const email = signupData?.email || ""
     const [otp, setOtp] = useState("");
     const [message, setMessage] = useState("");
     const [timer, setTimer] = useState(60)
@@ -39,10 +38,11 @@ const OtpForm = () => {
     const verifyOtp = async () => {
         try {
             const { data } = await axios.post(`${API_URL}/auth/verifyotp`, { email, otp })
-            // eslint-disable-next-line no-constant-condition
-            if (data?.success || true) {
-                setMessage(data.message || "OTP verified successfully")
-                router.navigate({ to: "/login" })
+            if (data?.success && signupData) {
+                await axios.post(`${API_URL}/auth/register`, signupData);
+                alert("Registered successfully!");
+                clearSignupData();
+                router.navigate({ to: "/login" });
             } else {
                 setMessage(data.message || "Invalid OTP");
             }
@@ -58,7 +58,6 @@ const OtpForm = () => {
 
     return (
         <>
-            <Navbar />
             <div className="p-4 w-md mx-auto mt-30 bg-amber-50">
                 <h2 className="text-xl font-bold mb-2 ">Email OTP Verification</h2>
                 <input

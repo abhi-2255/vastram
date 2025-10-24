@@ -1,10 +1,11 @@
 import { useRouter } from "@tanstack/react-router"
 import { useState } from "react"
-import Navbar from "../Navbar";
 import { useSignupMutation } from "../queries/authQueries";
+import { useSignupStore } from "../store/signupStore";
 
 const Signup = () => {
     const router = useRouter();
+    const { setSignupData } = useSignupStore()
     const [formData, setFormData] = useState({
         firstName: "",
         lastName: "",
@@ -73,46 +74,66 @@ const Signup = () => {
     //     if (formData.password !== formData.confirmPassword) return "Passwords do not match";
     //     return null;
     // }
-
-    const signupMutation = useSignupMutation();
-
-    const handleSubmit = (e: React.FormEvent) => {
+    const signupMutation = useSignupMutation()
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        signupMutation.mutate(formData,{
-            onSuccess:()=>{
-                alert('Signup successful! Please verify your email')
-                router.navigate({
-                    to:"/otp",
-                    search: {email:formData.email},
-                });
-                },
-            onError:(error)=>{
-                console.error(error)
-                alert("Signup Failed")
-            }
-        })
-    }
+
+        // Check client-side validation first
+        const validationErrors: { [key: string]: string } = {};
+        Object.keys(formData).forEach((key) => {
+            const error = validateField(key, (formData as never)[key])
+            if (error) validationErrors[key] = error;
+        });
+
+        if (Object.keys(validationErrors).length > 0) {
+            setErrors(validationErrors);
+            return;
+        }
+
+        signupMutation.mutate(formData, {
+            onSuccess: () => {
+                setSignupData({
+                    firstName: formData.firstName,
+                    lastName: formData.lastName,
+                    mobile: formData.mobile,
+                    email: formData.email,
+                    password: formData.password,
+                })
+                alert("Signup successful! Please verify your email.");
+                router.navigate({to: "/otp"});
+            },
+            onError: (error) => {
+                console.error("Signup failed:", error);
+                alert("Signup failed. Please try again.");
+            },
+        });
+    };
     return (
         <>
-            <Navbar />
             <div className="container mx-auto mt-10 flex justify-center ">
                 <form onSubmit={handleSubmit}
                     className="flex flex-col justify-center items-center w-xs text-gray-800 bg-amber-50 space-y-3 p-5 border border-gray-100 rounded-md">
                     <h2 className="inline-flex items-center text-3xl mb-2">Create Account</h2>
                     <div className="flex flex-col justify-center items-center w-full space-y-3 p-2">
                         <>
-                            <input type="text" name="firstName" value={formData.firstName} onChange={handleChange} onBlur={handleBlur} className="px-3 py-2 w-[90%]  border border-gray-800" placeholder="First name" />
+                            <input type="text" name="firstName" value={formData.firstName}
+                                onChange={handleChange} onBlur={handleBlur} className="px-3 py-2 w-[90%]  border border-gray-800" placeholder="First name" />
                             {errors.firstName && <p className="text-red-500">{errors.firstName}</p>}
-                            < input type="text" name="lastName" value={formData.lastName} onChange={handleChange} onBlur={handleBlur} className="px-3 py-2 w-[90%]  border border-gray-800" placeholder="Last name" />
+                            < input type="text" name="lastName" value={formData.lastName}
+                                onChange={handleChange} onBlur={handleBlur} className="px-3 py-2 w-[90%]  border border-gray-800" placeholder="Last name" />
                             {errors.lastName && <p className="text-red-500">{errors.lastName}</p>}
-                            < input type="text" name="mobile" value={formData.mobile} onChange={handleChange} onBlur={handleBlur} className="px-3 py-2 w-[90%]  border border-gray-800" placeholder="Mobile Number" />
+                            < input type="text" name="mobile" value={formData.mobile}
+                                onChange={handleChange} onBlur={handleBlur} className="px-3 py-2 w-[90%]  border border-gray-800" placeholder="Mobile Number" />
                             {errors.mobile && <p className="text-red-500">{errors.mobile}</p>}
                         </>
-                        <input type="text" name="email" value={formData.email} onChange={handleChange} onBlur={handleBlur} className="px-3 py-2 w-[90%]  border border-gray-800" placeholder="Email" />
+                        <input type="text" name="email" value={formData.email}
+                            onChange={handleChange} onBlur={handleBlur} className="px-3 py-2 w-[90%]  border border-gray-800" placeholder="Email" />
                         {errors.email && <p className="text-red-500">{errors.email}</p>}
-                        <input type="password" name="password" value={formData.password} onChange={handleChange} onBlur={handleBlur} className="px-3 py-2 w-[90%]  border border-gray-800" placeholder="Password" />
+                        <input type="password" name="password" value={formData.password}
+                            onChange={handleChange} onBlur={handleBlur} className="px-3 py-2 w-[90%]  border border-gray-800" placeholder="Password" />
                         {errors.password && <p className="text-red-500">{errors.password}</p>}
-                        <input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} onBlur={handleBlur} className="px-3 py-2 w-[90%]  border border-gray-800" placeholder="Confirm Password" />
+                        <input type="password" name="confirmPassword" value={formData.confirmPassword}
+                            onChange={handleChange} onBlur={handleBlur} className="px-3 py-2 w-[90%]  border border-gray-800" placeholder="Confirm Password" />
                         {errors.confirmPassword && <p className="text-red-500">{errors.confirmPassword}</p>}
                         <div className="flex justify-around w-full gap-2">
                             <p className="cursor-pointer text-sm font-medium">Already Have an account!Login</p>
