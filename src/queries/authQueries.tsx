@@ -24,3 +24,4 @@ export const useSignupMutation = (onSuccess?: (data: AuthResponse)=>void)=>{
         onSuccess,
     })
 }
+

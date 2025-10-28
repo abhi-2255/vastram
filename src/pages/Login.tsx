@@ -1,7 +1,6 @@
 import { useRouter, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useLoginMutation } from "../queries/authQueries";
-import Navbar from "../Navbar";
 
 
 const Login = () => {
@@ -50,7 +49,6 @@ const Login = () => {
     }
     return (
         <>
-            <Navbar />
             <div className="container mx-auto mt-10 flex justify-center">
                 <form
                     onSubmit={handleSubmit}

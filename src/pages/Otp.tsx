@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useRouter, } from "@tanstack/react-router";
 import axios from "axios";
 import { useSignupStore } from "../store/signupStore";
@@ -13,6 +13,7 @@ const OtpForm = () => {
     const [message, setMessage] = useState("");
     const [timer, setTimer] = useState(60)
     const [isResendDisabled, setIsResendDisabled] = useState(true)
+    const otpSentRef = useRef(false)
 
     useEffect(() => {
         if (timer > 0 && isResendDisabled) {
@@ -28,18 +29,24 @@ const OtpForm = () => {
             setIsResendDisabled(true)
             setTimer(60)
             const { data } = await axios.post(`${API_URL}/auth/send-otp`, { email })
-            setMessage(data.message || "OTP sent!");
+            setMessage(data.message || "OTP sent!")
         } catch (error) {
             console.error("Error sending OTP", error)
-            setMessage("Error sending OTP");
+            setMessage("Error sending OTP. Try Again later");
         }
     }, [email])
 
     const verifyOtp = async () => {
         try {
-            const { data } = await axios.post(`${API_URL}/auth/verifyotp`, { email, otp })
+            const payload = {
+                email,
+                otp,
+                name: signupData?.firstName + " " + signupData?.lastName,
+                password: signupData?.password,
+            };
+
+            const { data } = await axios.post(`${API_URL}/auth/verifyotp`, payload)
             if (data?.success && signupData) {
-                await axios.post(`${API_URL}/auth/register`, signupData);
                 alert("Registered successfully!");
                 clearSignupData();
                 router.navigate({ to: "/login" });
@@ -47,13 +54,16 @@ const OtpForm = () => {
                 setMessage(data.message || "Invalid OTP");
             }
         } catch (err) {
-            console.error("Error verifying OTP", err);
+            console.error("OTP Verification Error", err);
             setMessage("Error verifying OTP");
         }
     }
 
     useEffect(() => {
-        if (email) sendOtp()
+        if (email && !otpSentRef.current) {
+            sendOtp();
+            otpSentRef.current = true;
+        }
     }, [email, sendOtp]);
 
     return (
@@ -94,7 +104,6 @@ const OtpForm = () => {
                 <p className="text-sm text-gray-700">{message}</p>
             </div>
         </>
-
     );
 };
 

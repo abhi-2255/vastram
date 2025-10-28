@@ -3,9 +3,11 @@ import { useState } from "react"
 import { useSignupMutation } from "../queries/authQueries";
 import { useSignupStore } from "../store/signupStore";
 
+
 const Signup = () => {
     const router = useRouter();
     const { setSignupData } = useSignupStore()
+
     const [formData, setFormData] = useState({
         firstName: "",
         lastName: "",
@@ -77,6 +79,7 @@ const Signup = () => {
     const signupMutation = useSignupMutation()
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setMessage("")
 
         // Check client-side validation first
         const validationErrors: { [key: string]: string } = {};
@@ -100,7 +103,7 @@ const Signup = () => {
                     password: formData.password,
                 })
                 alert("Signup successful! Please verify your email.");
-                router.navigate({to: "/otp"});
+                router.navigate({ to: "/otp" });
             },
             onError: (error) => {
                 console.error("Signup failed:", error);
@@ -108,41 +111,42 @@ const Signup = () => {
             },
         });
     };
-    return (
-        <>
-            <div className="container mx-auto mt-10 flex justify-center ">
-                <form onSubmit={handleSubmit}
-                    className="flex flex-col justify-center items-center w-xs text-gray-800 bg-amber-50 space-y-3 p-5 border border-gray-100 rounded-md">
-                    <h2 className="inline-flex items-center text-3xl mb-2">Create Account</h2>
-                    <div className="flex flex-col justify-center items-center w-full space-y-3 p-2">
-                        <>
-                            <input type="text" name="firstName" value={formData.firstName}
-                                onChange={handleChange} onBlur={handleBlur} className="px-3 py-2 w-[90%]  border border-gray-800" placeholder="First name" />
-                            {errors.firstName && <p className="text-red-500">{errors.firstName}</p>}
-                            < input type="text" name="lastName" value={formData.lastName}
-                                onChange={handleChange} onBlur={handleBlur} className="px-3 py-2 w-[90%]  border border-gray-800" placeholder="Last name" />
-                            {errors.lastName && <p className="text-red-500">{errors.lastName}</p>}
-                            < input type="text" name="mobile" value={formData.mobile}
-                                onChange={handleChange} onBlur={handleBlur} className="px-3 py-2 w-[90%]  border border-gray-800" placeholder="Mobile Number" />
-                            {errors.mobile && <p className="text-red-500">{errors.mobile}</p>}
-                        </>
-                        <input type="text" name="email" value={formData.email}
-                            onChange={handleChange} onBlur={handleBlur} className="px-3 py-2 w-[90%]  border border-gray-800" placeholder="Email" />
-                        {errors.email && <p className="text-red-500">{errors.email}</p>}
-                        <input type="password" name="password" value={formData.password}
-                            onChange={handleChange} onBlur={handleBlur} className="px-3 py-2 w-[90%]  border border-gray-800" placeholder="Password" />
-                        {errors.password && <p className="text-red-500">{errors.password}</p>}
-                        <input type="password" name="confirmPassword" value={formData.confirmPassword}
-                            onChange={handleChange} onBlur={handleBlur} className="px-3 py-2 w-[90%]  border border-gray-800" placeholder="Confirm Password" />
-                        {errors.confirmPassword && <p className="text-red-500">{errors.confirmPassword}</p>}
-                        <div className="flex justify-around w-full gap-2">
-                            <p className="cursor-pointer text-sm font-medium">Already Have an account!Login</p>
-                        </div>
-                        <button type="submit" className="bg-red-400 hover:bg-red-500 cursor-pointer text-white px-5 py-2 mt-2 rounded">SignUp</button>
+
+return (
+    <>
+        <div className="container mx-auto mt-10 flex justify-center ">
+            <form onSubmit={handleSubmit}
+                className="flex flex-col justify-center items-center w-xs text-gray-800 bg-amber-50 space-y-3 p-5 border border-gray-100 rounded-md">
+                <h2 className="inline-flex items-center text-3xl mb-2">Create Account</h2>
+                <div className="flex flex-col justify-center items-center w-full space-y-3 p-2">
+                    <>
+                        <input type="text" name="firstName" value={formData.firstName}
+                            onChange={handleChange} onBlur={handleBlur} className="px-3 py-2 w-[90%]  border border-gray-800" placeholder="First name" />
+                        {errors.firstName && <p className="text-red-500">{errors.firstName}</p>}
+                        < input type="text" name="lastName" value={formData.lastName}
+                            onChange={handleChange} onBlur={handleBlur} className="px-3 py-2 w-[90%]  border border-gray-800" placeholder="Last name" />
+                        {errors.lastName && <p className="text-red-500">{errors.lastName}</p>}
+                        < input type="text" name="mobile" value={formData.mobile}
+                            onChange={handleChange} onBlur={handleBlur} className="px-3 py-2 w-[90%]  border border-gray-800" placeholder="Mobile Number" />
+                        {errors.mobile && <p className="text-red-500">{errors.mobile}</p>}
+                    </>
+                    <input type="text" name="email" value={formData.email}
+                        onChange={handleChange} onBlur={handleBlur} className="px-3 py-2 w-[90%]  border border-gray-800" placeholder="Email" />
+                    {errors.email && <p className="text-red-500">{errors.email}</p>}
+                    <input type="password" name="password" value={formData.password}
+                        onChange={handleChange} onBlur={handleBlur} className="px-3 py-2 w-[90%]  border border-gray-800" placeholder="Password" />
+                    {errors.password && <p className="text-red-500">{errors.password}</p>}
+                    <input type="password" name="confirmPassword" value={formData.confirmPassword}
+                        onChange={handleChange} onBlur={handleBlur} className="px-3 py-2 w-[90%]  border border-gray-800" placeholder="Confirm Password" />
+                    {errors.confirmPassword && <p className="text-red-500">{errors.confirmPassword}</p>}
+                    <div className="flex justify-around w-full gap-2">
+                        <p className="cursor-pointer text-sm font-medium">Already Have an account!Login</p>
                     </div>
-                </form>
-            </div>
-        </>
-    )
+                    <button type="submit" className="bg-red-400 hover:bg-red-500 cursor-pointer text-white px-5 py-2 mt-2 rounded">SignUp</button>
+                </div>
+            </form>
+        </div>
+    </>
+)
 }
 export default Signup;
