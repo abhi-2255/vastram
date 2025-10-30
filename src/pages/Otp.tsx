@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback, useRef } from "react";
 import { useRouter, } from "@tanstack/react-router";
 import axios from "axios";
 import { useSignupStore } from "../store/signupStore";
+import { useVerifyOtpMutation } from "../queries/authQueries";
 
 const API_URL = import.meta.env.VITE_API_URL as string;
 
@@ -14,6 +15,35 @@ const OtpForm = () => {
     const [timer, setTimer] = useState(60)
     const [isResendDisabled, setIsResendDisabled] = useState(true)
     const otpSentRef = useRef(false)
+
+
+    const verifyOtpMutation = useVerifyOtpMutation((data) => {
+        if (data.success) {
+            alert("🎉 Account created successfully!");
+            clearSignupData();
+            router.navigate({ to: "/login" });
+        } else {
+            setMessage(data.message || "Invalid OTP");
+        }
+    })
+
+    const handleVerifyOtp = () => {
+        if (!otp.trim()) {
+            alert("Please enter the OTP");
+            return;
+        }
+
+        if (!signupData?.email) {
+            alert("Email missing! Please sign up again.");
+            router.navigate({ to: "/signup" });
+            return;
+        }
+
+        verifyOtpMutation.mutate({
+            email: signupData.email,
+            otp,
+        });
+    };
 
     useEffect(() => {
         if (timer > 0 && isResendDisabled) {
@@ -28,7 +58,9 @@ const OtpForm = () => {
         try {
             setIsResendDisabled(true)
             setTimer(60)
-            const { data } = await axios.post(`${API_URL}/auth/send-otp`, { email })
+            const { data } = await axios.post(`${API_URL}/auth/send-otp`, {
+                email
+            })
             setMessage(data.message || "OTP sent!")
         } catch (error) {
             console.error("Error sending OTP", error)
@@ -36,28 +68,28 @@ const OtpForm = () => {
         }
     }, [email])
 
-    const verifyOtp = async () => {
-        try {
-            const payload = {
-                email,
-                otp,
-                name: signupData?.firstName + " " + signupData?.lastName,
-                password: signupData?.password,
-            };
+    // const verifyOtp = async () => {
+    //     try {
+    //         const payload = {
+    //             email,
+    //             otp,
+    //             name: signupData?.firstName + " " + signupData?.lastName,
+    //             password: signupData?.password,
+    //         };
 
-            const { data } = await axios.post(`${API_URL}/auth/verifyotp`, payload)
-            if (data?.success && signupData) {
-                alert("Registered successfully!");
-                clearSignupData();
-                router.navigate({ to: "/login" });
-            } else {
-                setMessage(data.message || "Invalid OTP");
-            }
-        } catch (err) {
-            console.error("OTP Verification Error", err);
-            setMessage("Error verifying OTP");
-        }
-    }
+    //         const { data } = await axios.post(`${API_URL}/auth/verifyotp`, payload)
+    //         if (data?.success && signupData) {
+    //             alert("Registered successfully!");
+    //             clearSignupData();
+    //             router.navigate({ to: "/login" });
+    //         } else {
+    //             setMessage(data.message || "Invalid OTP");
+    //         }
+    //     } catch (err) {
+    //         console.error("OTP Verification Error", err);
+    //         setMessage("Error verifying OTP");
+    //     }
+    // }
 
     useEffect(() => {
         if (email && !otpSentRef.current) {
@@ -96,12 +128,19 @@ const OtpForm = () => {
                     className="border p-2 w-full mb-2"
                 />
                 <button
-                    onClick={verifyOtp}
+                    onClick={handleVerifyOtp}
+                    disabled={verifyOtpMutation.isPending}
                     className="bg-green-400 hover:bg-green-500 text-white px-4 py-2 rounded mb-2 max-w-md grid place-content-end"
                 >
-                    Verify OTP
+                    {verifyOtpMutation.isPending ? "Verifying..." : "Verify OTP"}
                 </button>
-                <p className="text-sm text-gray-700">{message}</p>
+                {verifyOtpMutation.isError && (
+                    <p className="text-sm text-gray-700">{message}
+                        {verifyOtpMutation.error instanceof Error
+                            ? verifyOtpMutation.error.message
+                            : "Something went wrong"}
+                    </p>
+                )}
             </div>
         </>
     );

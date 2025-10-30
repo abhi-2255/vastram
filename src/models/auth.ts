@@ -14,6 +14,7 @@ export interface SignupData{
 }
 
 export interface AuthResponse{
+    success: any;
     token: string;
     message?: string;
 }

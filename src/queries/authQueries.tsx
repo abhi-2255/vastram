@@ -1,27 +1,41 @@
 import { useMutation } from "@tanstack/react-query";
-import type { AuthResponse, LoginData, SignupData } from "../models/auth";
+import type { AuthResponse, LoginData, SignupData } from "../models/auth.ts";
 import axios from "axios";
 
 
 const API_URL = import.meta.env.VITE_API_URL as string
 
-export const useLoginMutation = (onSuccess?: (data: AuthResponse)=>void) =>{
+export const useLoginMutation = (onSuccess?: (data: AuthResponse) => void) => {
     return useMutation({
-        mutationFn: async(data:LoginData): Promise<AuthResponse> =>{
-            const res = await axios.post(`${API_URL}/auth/login`,data)
+        mutationFn: async (data: LoginData): Promise<AuthResponse> => {
+            const res = await axios.post(`${API_URL}/auth/login`, data)
             return res.data;
         },
         onSuccess,
     })
 }
 
-export const useSignupMutation = (onSuccess?: (data: AuthResponse)=>void)=>{
+export const useSignupMutation = (onSuccess?: (data: AuthResponse) => void) => {
     return useMutation({
-        mutationFn: async(data:SignupData): Promise<AuthResponse>=>{
-            const res = await axios.post(`${API_URL}/auth/signup`,data)
+        mutationFn: async (data: SignupData): Promise<AuthResponse> => {
+            const res = await axios.post(`${API_URL}/auth/send-otp`, data)
             return res.data;
         },
         onSuccess,
     })
 }
 
+export const useVerifyOtpMutation = (onSuccess?: (data: AuthResponse) => void) => {
+    return useMutation({
+        mutationFn: async ({
+            email, otp }:
+            {
+                email: string;
+                otp: string
+            }): Promise<AuthResponse> => {
+            const res = await axios.post(`${API_URL}/auth/verifyotp`, { email, otp })
+            return res.data;
+        },
+        onSuccess,
+    })
+}

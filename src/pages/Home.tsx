@@ -1,5 +1,4 @@
 import type React from "react";
-import Navbar from "../Navbar";
 import { useRouter } from "@tanstack/react-router";
 import { useEffect } from "react";
 import Product from "./Product";
@@ -21,7 +20,6 @@ const Home: React.FC = () => {
 
     return (
         <div className="bg-white text-gray-900 font-[prata]" >
-            <Navbar />
             {/* Hero Section         */}
             <section className="grid grid-cols-1 md:grid-cols-2 items-center px-10 py-10 gap-10">
                 <div>

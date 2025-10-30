@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
 interface LoginFormData {
     email: string;
@@ -8,12 +9,13 @@ interface LoginFormData {
 interface FormErrors {
     email?: string;
     password?: string;
+    general?: string;
 }
 
 const AdminLogin: React.FC = () => {
     const [formData, setFormData] = useState<LoginFormData>({
         email: '',
-        password: ''
+        password: '',
     });
 
     const [errors, setErrors] = useState<FormErrors>({});
@@ -61,26 +63,23 @@ const AdminLogin: React.FC = () => {
 
         try {
             // Replace this with your actual login API call
-            const response = await fetch('/admin/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
-            });
-
-            if (response.ok) {
-                // Handle successful login
-                console.log('Login successful');
-                // Redirect to admin dashboard or handle success
-            } else {
-                // Handle login error
-                const errorData = await response.json();
-                setErrors({ email: errorData.message || 'Login failed' });
-            }
+            const response = await axios.post('/admin/login',
+                formData,
+                { headers: { "Content-Type": "application/json" } }
+            )
+            console.log('Login successful', response.data);
+            // Redirect to admin dashboard or handle success
         } catch (error) {
             console.error('Login error:', error);
-            setErrors({ email: 'An error occurred. Please try again.' });
+            if (error.response) {
+                // Backend returned an error message
+                setErrors({
+                    general: error.response.data.message || "Login failed. Please try again.",
+                });
+            } else {
+                // Network or unexpected error
+                setErrors({ general: "Network error. Please check your connection." });
+            }
         } finally {
             setIsSubmitting(false);
         }
@@ -132,6 +131,9 @@ const AdminLogin: React.FC = () => {
                                     </p>
                                 )}
                             </div>
+                            {errors.general && (
+                                <div className="text-danger text-center mb-3">{errors.general}</div>
+                            )}
 
                             <div className="mb-4">
                                 <button
@@ -149,7 +151,7 @@ const AdminLogin: React.FC = () => {
 
             <footer className="main-footer text-center">
                 <p className="font-xs">
-                    {currentYear} © InstyleSole - The Complete Shoe Store .
+                    {currentYear} © Vastram - The Complete Ethnic Traditional Store .
                 </p>
                 <p className="font-xs mb-30">All rights reserved</p>
             </footer>
