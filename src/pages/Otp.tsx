@@ -68,35 +68,9 @@ const OtpForm = () => {
         }
     }, [email])
 
-    // const verifyOtp = async () => {
-    //     try {
-    //         const payload = {
-    //             email,
-    //             otp,
-    //             name: signupData?.firstName + " " + signupData?.lastName,
-    //             password: signupData?.password,
-    //         };
-
-    //         const { data } = await axios.post(`${API_URL}/auth/verifyotp`, payload)
-    //         if (data?.success && signupData) {
-    //             alert("Registered successfully!");
-    //             clearSignupData();
-    //             router.navigate({ to: "/login" });
-    //         } else {
-    //             setMessage(data.message || "Invalid OTP");
-    //         }
-    //     } catch (err) {
-    //         console.error("OTP Verification Error", err);
-    //         setMessage("Error verifying OTP");
-    //     }
-    // }
-
     useEffect(() => {
-        if (email && !otpSentRef.current) {
-            sendOtp();
             otpSentRef.current = true;
-        }
-    }, [email, sendOtp]);
+    },[]);
 
     return (
         <>

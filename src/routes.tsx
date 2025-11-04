@@ -25,8 +25,8 @@ const loginRoute = createRoute({ getParentRoute: () => rootRoute, path: "/login"
 const signupRoute = createRoute({ getParentRoute: () => rootRoute, path: "/signup", component: Signup })
 const otpRoute = createRoute({ getParentRoute: () => rootRoute, path: "/otp", component: OtpForm, })
 const productRoute = createRoute({ getParentRoute: () => rootRoute, path: "/product", component: Product })
-const adminRoute = createRoute({ getParentRoute: () => rootRoute, path: "/admin", component: adminHome })
-const adminlogRoute = createRoute({ getParentRoute: () => rootRoute, path: "/adminlog", component: adminLogin })
+const adminRoute = createRoute({ getParentRoute: () => rootRoute, path: "/admin/dashboard", component: adminHome })
+const adminlogRoute = createRoute({ getParentRoute: () => rootRoute, path: "/admin/login", component: adminLogin })
 const adminProdRoute = createRoute({ getParentRoute: () => rootRoute, path: "/product-manage", component: adminProduct })
 
 const routeTree = rootRoute.addChildren([homeRoute, loginRoute, signupRoute, otpRoute, productRoute,
